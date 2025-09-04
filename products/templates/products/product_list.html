@@ -31,6 +31,47 @@
                             Categoría: {{ producto.category.name }}
                         </p>
                     </div>
+                    <div class="card-footer bg-transparent border-top-0 d-flex gap-2">
+                        <a href="{% url 'products:product_update' producto.id %}" class="btn btn-warning w-50">
+                            Actualizar
+                        </a>
+                        <!-- Botón que abre el Modal de Confirmación -->
+                        <button type="button" class="btn btn-danger w-50" data-bs-toggle="modal"
+                            data-bs-target="#deleteModal{{ producto.id }}">
+                            Eliminar
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal de Confirmación -->
+            <div class="modal fade" id="deleteModal{{ producto.id }}" tabindex="-1"
+                aria-labelledby="deleteModalLabel{{ producto.id }}" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="deleteModalLabel{{ producto.id }}">
+                                Confirmar eliminación
+                            </h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar">
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            ¿Estás seguro de que deseas eliminar
+                            <strong>{{ producto.title }}</strong>?
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                Cancelar
+                            </button>
+                            <form method="post" action="{% url 'products:product_delete' producto.id %}">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-danger">
+                                    Sí, eliminar
+                                </button>
+                            </form>
+                        </div>
+                    </div>
                 </div>
             </div>
             {% empty %}
