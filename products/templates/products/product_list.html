@@ -1,0 +1,42 @@
+{% extends 'products/base.html' %}
+
+{% block content %}
+
+<div class="row">
+    <!-- Panel de Categorías -->
+    <aside class="col-md-3 mb-4">
+        <h5>Categorías</h5>
+        <ul class="list-group">
+            {% for cat in categorias %}
+            <a href="?category={{ cat }}"
+                class="list-group-item list-group-item-action {% if selected == cat %}active{% endif %}">
+                {{ cat }}
+            </a>
+            {% endfor %}
+        </ul>
+    </aside>
+
+    <!-- Grilla de Productos -->
+    <section class="col-md-9">
+        <h1 class="mb-4">Productos</h1>
+        <div class="row g-4">
+            {% for producto in productos %}
+            <div class="col-md-4">
+                <div class="card h-100 text-dark">
+                    <img src="{{ producto.images.0 }}" class="card-img-top" alt="{{ producto.title }}">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ producto.title }}</h5>
+                        <p class="card-text">
+                            Precio: ${{ producto.price }}<br>
+                            Categoría: {{ producto.category.name }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <p>No se encontraron productos.</p>
+            {% endfor %}
+        </div>
+    </section>
+</div>
+{% endblock %}
