@@ -1,0 +1,282 @@
+{% extends 'products/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <!-- Card principal de registro -->
+            <div class="card bg-dark border-primary shadow-lg">
+                <div class="card-header bg-primary text-white text-center">
+                    <h3 class="mb-0">
+                        <i class="bi bi-person-plus"></i> Crear Nueva Cuenta
+                    </h3>
+                </div>
+                
+                <div class="card-body p-4">
+                    <!-- Mensajes de alerta -->
+                    <div id="registerAlert" class="alert alert-dismissible fade show d-none" role="alert">
+                        <span id="registerAlertMessage"></span>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                    
+                    <!-- Indicador de progreso -->
+                    <div class="progress mb-3" style="height: 5px;">
+                        <div id="passwordStrengthBar" class="progress-bar" role="progressbar" style="width: 0%"></div>
+                    </div>
+                    
+                    <!-- Formulario de registro -->
+                    <form id="registerForm" novalidate>
+                        <div class="row">
+                            <!-- Nombre -->
+                            <div class="col-md-6 mb-3">
+                                <label for="firstName" class="form-label text-light">
+                                    <i class="bi bi-person"></i> Nombre
+                                </label>
+                                <input 
+                                    type="text" 
+                                    class="form-control bg-secondary text-light border-secondary" 
+                                    id="firstName" 
+                                    name="first_name"
+                                    placeholder="Tu nombre"
+                                    required
+                                >
+                                <div class="invalid-feedback">
+                                    Por favor ingresa tu nombre.
+                                </div>
+                            </div>
+                            
+                            <!-- Apellido -->
+                            <div class="col-md-6 mb-3">
+                                <label for="lastName" class="form-label text-light">
+                                    <i class="bi bi-person"></i> Apellido
+                                </label>
+                                <input 
+                                    type="text" 
+                                    class="form-control bg-secondary text-light border-secondary" 
+                                    id="lastName" 
+                                    name="last_name"
+                                    placeholder="Tu apellido"
+                                    required
+                                >
+                                <div class="invalid-feedback">
+                                    Por favor ingresa tu apellido.
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Usuario -->
+                        <div class="mb-3">
+                            <label for="username" class="form-label text-light">
+                                <i class="bi bi-at"></i> Nombre de Usuario
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-secondary border-secondary">
+                                    <i class="bi bi-person-badge text-light"></i>
+                                </span>
+                                <input 
+                                    type="text" 
+                                    class="form-control bg-secondary text-light border-secondary" 
+                                    id="username" 
+                                    name="username"
+                                    placeholder="Elige un nombre de usuario único"
+                                    required
+                                    autocomplete="username"
+                                >
+                                <button 
+                                    class="btn btn-outline-light" 
+                                    type="button" 
+                                    id="checkUsernameBtn"
+                                    title="Verificar disponibilidad"
+                                >
+                                    <i class="bi bi-check-circle"></i>
+                                </button>
+                            </div>
+                            <div id="usernameHelp" class="form-text text-info">
+                                <small>Mínimo 3 caracteres, sin espacios</small>
+                            </div>
+                            <div id="usernameFeedback" class="mt-1"></div>
+                            <div class="invalid-feedback">
+                                El nombre de usuario debe tener al menos 3 caracteres.
+                            </div>
+                        </div>
+                        
+                        <!-- Email -->
+                        <div class="mb-3">
+                            <label for="email" class="form-label text-light">
+                                <i class="bi bi-envelope"></i> Correo Electrónico
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-secondary border-secondary">
+                                    <i class="bi bi-envelope-fill text-light"></i>
+                                </span>
+                                <input 
+                                    type="email" 
+                                    class="form-control bg-secondary text-light border-secondary" 
+                                    id="email" 
+                                    name="email"
+                                    placeholder="correo@ejemplo.com"
+                                    required
+                                    autocomplete="email"
+                                >
+                            </div>
+                            <div class="invalid-feedback">
+                                Por favor ingresa un correo electrónico válido.
+                            </div>
+                        </div>
+                        
+                        <!-- Contraseña -->
+                        <div class="mb-3">
+                            <label for="password" class="form-label text-light">
+                                <i class="bi bi-lock"></i> Contraseña
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-secondary border-secondary">
+                                    <i class="bi bi-lock-fill text-light"></i>
+                                </span>
+                                <input 
+                                    type="password" 
+                                    class="form-control bg-secondary text-light border-secondary" 
+                                    id="password" 
+                                    name="password"
+                                    placeholder="Mínimo 8 caracteres"
+                                    required
+                                    autocomplete="new-password"
+                                >
+                                <button 
+                                    class="btn btn-outline-light" 
+                                    type="button" 
+                                    id="togglePassword"
+                                    title="Mostrar/Ocultar contraseña"
+                                >
+                                    <i class="bi bi-eye" id="togglePasswordIcon"></i>
+                                </button>
+                            </div>
+                            <div id="passwordHelp" class="form-text">
+                                <small id="passwordStrengthText" class="text-info">
+                                    La contraseña debe tener al menos 8 caracteres
+                                </small>
+                            </div>
+                            <div class="invalid-feedback">
+                                La contraseña debe tener al menos 8 caracteres.
+                            </div>
+                        </div>
+                        
+                        <!-- Confirmar Contraseña -->
+                        <div class="mb-3">
+                            <label for="password2" class="form-label text-light">
+                                <i class="bi bi-lock-fill"></i> Confirmar Contraseña
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-secondary border-secondary">
+                                    <i class="bi bi-lock-fill text-light"></i>
+                                </span>
+                                <input 
+                                    type="password" 
+                                    class="form-control bg-secondary text-light border-secondary" 
+                                    id="password2" 
+                                    name="password2"
+                                    placeholder="Repite tu contraseña"
+                                    required
+                                    autocomplete="new-password"
+                                >
+                                <button 
+                                    class="btn btn-outline-light" 
+                                    type="button" 
+                                    id="togglePassword2"
+                                    title="Mostrar/Ocultar contraseña"
+                                >
+                                    <i class="bi bi-eye" id="togglePassword2Icon"></i>
+                                </button>
+                            </div>
+                            <div id="password2Feedback" class="mt-1"></div>
+                            <div class="invalid-feedback">
+                                Las contraseñas no coinciden.
+                            </div>
+                        </div>
+                        
+                        <!-- Términos y condiciones -->
+                        <div class="mb-3 form-check">
+                            <input 
+                                type="checkbox" 
+                                class="form-check-input" 
+                                id="acceptTerms"
+                                name="acceptTerms"
+                                required
+                            >
+                            <label class="form-check-label text-light" for="acceptTerms">
+                                Acepto los 
+                                <a href="#" class="text-primary" data-bs-toggle="modal" data-bs-target="#termsModal">
+                                    términos y condiciones
+                                </a>
+                            </label>
+                            <div class="invalid-feedback">
+                                Debes aceptar los términos y condiciones.
+                            </div>
+                        </div>
+                        
+                        <!-- Botón de registro -->
+                        <button 
+                            type="submit" 
+                            class="btn btn-primary w-100 mb-3"
+                            id="registerButton"
+                        >
+                            <span id="registerButtonText">
+                                <i class="bi bi-person-plus"></i> Crear Cuenta
+                            </span>
+                            <span id="registerButtonSpinner" class="d-none">
+                                <span class="spinner-border spinner-border-sm me-2"></span>
+                                Creando cuenta...
+                            </span>
+                        </button>
+                        
+                        <!-- Separador -->
+                        <hr class="bg-secondary">
+                        
+                        <!-- Enlaces adicionales -->
+                        <div class="text-center">
+                            <p class="text-light mb-2">
+                                ¿Ya tienes una cuenta?
+                            </p>
+                            <a href="{% url 'products:login' %}" class="btn btn-outline-primary w-100">
+                                <i class="bi bi-box-arrow-in-right"></i> Iniciar Sesión
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de términos y condiciones -->
+<div class="modal fade" id="termsModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-scrollable">
+        <div class="modal-content bg-dark text-light">
+            <div class="modal-header bg-primary">
+                <h5 class="modal-title">Términos y Condiciones</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <h6>1. Aceptación de los términos</h6>
+                <p>Al registrarte en Platzi Store, aceptas estos términos y condiciones...</p>
+                
+                <h6>2. Uso de la plataforma</h6>
+                <p>Te comprometes a usar la plataforma de manera responsable...</p>
+                
+                <h6>3. Privacidad</h6>
+                <p>Tus datos personales serán tratados según nuestra política de privacidad...</p>
+                
+                <h6>4. Productos y servicios</h6>
+                <p>Los productos mostrados están sujetos a disponibilidad...</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Entendido</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Script específico para registro -->
+<script src="{% static 'accounts/js/auth.js' %}"></script>
+{% endblock %}

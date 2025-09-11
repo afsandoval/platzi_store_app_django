@@ -1,0 +1,172 @@
+{% extends 'products/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-5">
+            <!-- Card principal de login -->
+            <div class="card bg-dark border-primary shadow-lg">
+                <div class="card-header bg-primary text-white text-center">
+                    <h3 class="mb-0">
+                        <i class="bi bi-person-circle"></i> Iniciar Sesión
+                    </h3>
+                </div>
+                
+                <div class="card-body p-4">
+                    <!-- Mensajes de alerta -->
+                    <div id="loginAlert" class="alert alert-dismissible fade show d-none" role="alert">
+                        <span id="loginAlertMessage"></span>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                    
+                    <!-- Formulario de login -->
+                    <form id="loginForm" novalidate>
+                        <!-- Campo de usuario -->
+                        <div class="mb-3">
+                            <label for="loginUsername" class="form-label text-light">
+                                <i class="bi bi-person"></i> Usuario
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-secondary border-secondary">
+                                    <i class="bi bi-person-fill text-light"></i>
+                                </span>
+                                <input 
+                                    type="text" 
+                                    class="form-control bg-secondary text-light border-secondary" 
+                                    id="loginUsername" 
+                                    name="username"
+                                    placeholder="Ingresa tu usuario"
+                                    required
+                                    autocomplete="username"
+                                >
+                            </div>
+                            <div class="invalid-feedback">
+                                Por favor ingresa tu nombre de usuario.
+                            </div>
+                        </div>
+                        
+                        <!-- Campo de contraseña -->
+                        <div class="mb-3">
+                            <label for="loginPassword" class="form-label text-light">
+                                <i class="bi bi-lock"></i> Contraseña
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-secondary border-secondary">
+                                    <i class="bi bi-lock-fill text-light"></i>
+                                </span>
+                                <input 
+                                    type="password" 
+                                    class="form-control bg-secondary text-light border-secondary" 
+                                    id="loginPassword" 
+                                    name="password"
+                                    placeholder="Ingresa tu contraseña"
+                                    required
+                                    autocomplete="current-password"
+                                >
+                                <button 
+                                    class="btn btn-outline-light" 
+                                    type="button" 
+                                    id="toggleLoginPassword"
+                                    title="Mostrar/Ocultar contraseña"
+                                >
+                                    <i class="bi bi-eye" id="toggleLoginIcon"></i>
+                                </button>
+                            </div>
+                            <div class="invalid-feedback">
+                                Por favor ingresa tu contraseña.
+                            </div>
+                        </div>
+                        
+                        <!-- Checkbox recordar sesión -->
+                        <div class="mb-3 form-check">
+                            <input 
+                                type="checkbox" 
+                                class="form-check-input" 
+                                id="rememberMe"
+                                name="rememberMe"
+                            >
+                            <label class="form-check-label text-light" for="rememberMe">
+                                Recordar mi sesión
+                            </label>
+                        </div>
+                        
+                        <!-- Botón de login -->
+                        <button 
+                            type="submit" 
+                            class="btn btn-primary w-100 mb-3"
+                            id="loginButton"
+                        >
+                            <span id="loginButtonText">
+                                <i class="bi bi-box-arrow-in-right"></i> Iniciar Sesión
+                            </span>
+                            <span id="loginButtonSpinner" class="d-none">
+                                <span class="spinner-border spinner-border-sm me-2"></span>
+                                Iniciando sesión...
+                            </span>
+                        </button>
+                        
+                        <!-- Separador -->
+                        <hr class="bg-secondary">
+                        
+                        <!-- Enlaces adicionales -->
+                        <div class="text-center">
+                            <p class="text-light mb-2">
+                                ¿No tienes una cuenta?
+                            </p>
+                            <a href="{% url 'products:register' %}" class="btn btn-outline-primary w-100 mb-2">
+                                <i class="bi bi-person-plus"></i> Registrarse
+                            </a>
+                            
+                            <a href="#" class="text-primary text-decoration-none small" data-bs-toggle="modal" data-bs-target="#forgotPasswordModal">
+                                <i class="bi bi-key"></i> ¿Olvidaste tu contraseña?
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- Información adicional -->
+            <div class="text-center mt-3">
+                <small class="text-muted">
+                    <i class="bi bi-shield-check"></i> Tu información está segura con nosotros
+                </small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de recuperación de contraseña -->
+<div class="modal fade" id="forgotPasswordModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-dark text-light">
+            <div class="modal-header bg-primary">
+                <h5 class="modal-title">
+                    <i class="bi bi-key"></i> Recuperar Contraseña
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Ingresa tu correo electrónico para recibir instrucciones de recuperación:</p>
+                <form id="forgotPasswordForm">
+                    <div class="mb-3">
+                        <input 
+                            type="email" 
+                            class="form-control bg-secondary text-light border-secondary" 
+                            id="recoveryEmail"
+                            placeholder="correo@ejemplo.com"
+                            required
+                        >
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="bi bi-envelope"></i> Enviar Instrucciones
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Script específico para login -->
+<script src="{% static 'accounts/js/auth.js' %}"></script>
+{% endblock %}
