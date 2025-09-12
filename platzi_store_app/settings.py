@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -59,7 +60,10 @@ ROOT_URLCONF = 'platzi_store_app.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [ BASE_DIR / 'products' / 'templates' ],
+        'DIRS': [ 
+            BASE_DIR / 'products' / 'templates',
+            BASE_DIR / 'accounts' / 'templates',  # Templates de accounts
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -201,4 +205,110 @@ CORS_ALLOW_HEADERS = [
     'x-csrftoken',
     'x-requested-with',
 ]
+
+# ============================================================================
+# CONFIGURACIÓN DE AUTENTICACIÓN
+# ============================================================================
+
+# URLs de redirección para autenticación
+LOGIN_URL = 'accounts:login'          # URL a la que redirige @login_required
+LOGIN_REDIRECT_URL = 'products:product_list'  # Después de login exitoso
+LOGOUT_REDIRECT_URL = 'accounts:login'         # Después de logout
+
+# Configuración de mensajes de Django
+from django.contrib.messages import constants as messages
+MESSAGE_TAGS = {
+    messages.DEBUG: 'debug',
+    messages.INFO: 'info',
+    messages.SUCCESS: 'success',
+    messages.WARNING: 'warning',
+    messages.ERROR: 'danger',  # Bootstrap usa 'danger' en lugar de 'error'
+}
+
+# Configuración de sesión
+SESSION_COOKIE_AGE = 60 * 60 * 24 * 30  # 30 días
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False
+SESSION_SAVE_EVERY_REQUEST = True
+SESSION_COOKIE_SECURE = False  # Cambiar a True en producción con HTTPS
+SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_SAMESITE = 'Lax'
+
+# ============================================================================
+# CONFIGURACIÓN DE API PERSONALIZADA
+# ============================================================================
+
+# URL base de tu API de autenticación (CAMBIAR POR TU URL REAL)
+CUSTOM_API_BASE_URL = os.getenv('API_BASE_URL', 'http://localhost:8000/api/auth/')
+
+# Configuración de timeouts para requests
+API_TIMEOUT = 10  # segundos
+
+# ============================================================================
+# CONFIGURACIÓN DE LOGGING (Opcional)
+# ============================================================================
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {process:d} {thread:d} {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '{levelname} {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'file': {
+            'level': 'ERROR',
+            'class': 'logging.FileHandler',
+            'filename': BASE_DIR / 'logs' / 'django_errors.log',
+            'formatter': 'verbose',
+        },
+        'console': {
+            'level': 'INFO',
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple',
+        },
+    },
+    'loggers': {
+        'accounts': {
+            'handlers': ['file', 'console'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+        'products': {
+            'handlers': ['file', 'console'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+    },
+}
+
+# Crear directorio de logs si no existe
+LOGS_DIR = BASE_DIR / 'logs'
+LOGS_DIR.mkdir(exist_ok=True)
+
+# ============================================================================
+# CONFIGURACIÓN DE DESARROLLO/PRODUCCIÓN
+# ============================================================================
+
+if DEBUG:
+    # Configuraciones adicionales para desarrollo
+    INTERNAL_IPS = [
+        '127.0.0.1',
+        'localhost',
+    ]
+    
+    # Permitir todos los hosts en desarrollo (no usar en producción)
+    ALLOWED_HOSTS = ['*']
+else:
+    # Configuraciones para producción
+    SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SECURE_BROWSER_XSS_FILTER = True
+    SECURE_CONTENT_TYPE_NOSNIFF = True
 
