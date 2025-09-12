@@ -25,7 +25,7 @@ from .serializers import (
 
 
 # URL base de tu API (configurable desde settings)
-API_BASE_URL = getattr(settings, 'CUSTOM_API_BASE_URL', 'http://http://127.0.0.1:8000/')
+API_BASE_URL = "http://127.0.0.1:8000/api/"
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
@@ -235,6 +235,7 @@ def register_view(request):
                 'first_name': form.cleaned_data['first_name'],
                 'last_name': form.cleaned_data['last_name'],
                 'password': form.cleaned_data['password1'],
+                'password2': form.cleaned_data['password2'],
             }
             
             try:
@@ -259,7 +260,8 @@ def register_view(request):
                             email=user_data['email'],
                             first_name=user_data['first_name'],
                             last_name=user_data['last_name'],
-                            password=user_data['password']
+                            password=user_data['password'],
+                            password2=user_data['password2']
                         )
                         messages.success(
                             request, 
