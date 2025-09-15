@@ -31,6 +31,7 @@
                             Categoría: {{ producto.category.name }}
                         </p>
                     </div>
+                    {% if user.is_authenticated %}
                     <div class="card-footer bg-transparent border-top-0 d-flex gap-2">
                         <a href="{% url 'products:product_update' producto.id %}" class="btn btn-warning w-50">
                             Actualizar
@@ -41,6 +42,7 @@
                             Eliminar
                         </button>
                     </div>
+                    {% endif %}
                 </div>
             </div>
 
